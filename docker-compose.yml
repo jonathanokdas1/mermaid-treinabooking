@@ -2,6 +2,8 @@ version: '3.8'
 
 services:
   mermaid:
+    # Adicione esta linha abaixo para dar um nome à imagem que será construída
+    image: mermaid-local:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -39,6 +41,8 @@ services:
     volumes:
       - ./:/mermaid
       - /tmp/.X11-unix:/tmp/.X11-unix
+    # O aviso "Ignoring unsupported options: network_mode" ocorre porque o Swarm não aceita 'host'.
+    # Se você não estiver usando Swarm, pode manter. Se estiver no Swarm, remova a linha abaixo.
     network_mode: host
 
 volumes:
