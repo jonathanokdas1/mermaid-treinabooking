@@ -2,14 +2,10 @@ version: '3.8'
 
 services:
   mermaid:
-    # Adicione esta linha abaixo para dar um nome à imagem que será construída
     image: mermaid-local:latest
     build:
       context: .
       dockerfile: Dockerfile
-    stdin_open: true
-    tty: true
-    working_dir: /mermaid
     deploy:
       resources:
         limits:
@@ -17,7 +13,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/mermaid
+      # Alterado para volume nomeado para evitar erro de path no Portainer
+      - mermaid_data:/mermaid 
       - root_cache:/root/.cache
       - root_local:/root/.local
       - root_npm:/root/.npm
@@ -28,9 +25,6 @@ services:
 
   cypress:
     image: cypress/included:14.0.3
-    stdin_open: true
-    tty: true
-    working_dir: /mermaid
     deploy:
       resources:
         limits:
@@ -39,13 +33,11 @@ services:
     environment:
       - DISPLAY
     volumes:
-      - ./:/mermaid
+      - mermaid_data:/mermaid
       - /tmp/.X11-unix:/tmp/.X11-unix
-    # O aviso "Ignoring unsupported options: network_mode" ocorre porque o Swarm não aceita 'host'.
-    # Se você não estiver usando Swarm, pode manter. Se estiver no Swarm, remova a linha abaixo.
-    network_mode: host
 
 volumes:
+  mermaid_data: # Novo volume adicionado aqui
   root_cache:
   root_local:
   root_npm:
